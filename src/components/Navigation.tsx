@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ArrowRight } from "lucide-react";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,18 +18,29 @@ export default function Navigation() {
   }, []);
 
   const navLinks = [
-    { label: "Collection", href: "#collection" },
-    { label: "Our Narrative", href: "#narrative" },
-    { label: "Services", href: "#services" },
-    { label: "Credentials", href: "#credentials" }
+    { label: "Collection", to: "/properties", isExternal: true },
+    { label: "Our Narrative", to: "#narrative", isExternal: false },
+    { label: "Services", to: "#services", isExternal: false },
+    { label: "Credentials", to: "#credentials", isExternal: false }
   ];
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, link: typeof navLinks[0]) => {
     setIsMobileMenuOpen(false);
-    const targetElement = document.querySelector(href);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
+
+    if (link.isExternal) {
+      return; // Standard React Router Link will handle it
+    }
+
+    e.preventDefault();
+    if (location.pathname !== "/") {
+      // If not on homepage, navigate home first, then scroll
+      navigate(`/${link.to}`);
+    } else {
+      // If on homepage, smooth scroll directly
+      const targetElement = document.querySelector(link.to);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -41,8 +55,8 @@ export default function Navigation() {
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Logo / Wordmark */}
-          <a
-            href="#"
+          <Link
+            to="/"
             className="group flex flex-col focus:outline-hidden"
             aria-label="ALFF HOMES Home"
           >
@@ -52,32 +66,42 @@ export default function Navigation() {
             <span className="text-[7.5px] uppercase tracking-[0.38em] text-brand-taupe transition-colors group-hover:text-brand-bronze -mt-1 font-semibold">
               LTD — Est. 2021
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-10">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleLinkClick(e, link.href)}
-                className="text-xs uppercase tracking-[0.2em] text-brand-charcoal/80 hover:text-brand-bronze font-medium transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-brand-bronze after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left"
-              >
-                {link.label}
-              </a>
+              link.isExternal ? (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-xs uppercase tracking-[0.2em] text-brand-charcoal/80 hover:text-brand-bronze font-medium transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-brand-bronze after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.label}
+                  href={link.to}
+                  onClick={(e) => handleLinkClick(e, link)}
+                  className="text-xs uppercase tracking-[0.2em] text-brand-charcoal/80 hover:text-brand-bronze font-medium transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-brand-bronze after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
           </div>
 
           {/* Desktop Call to Action */}
           <div className="hidden md:block">
-            <a
-              href="#enquiry"
-              onClick={(e) => handleLinkClick(e, "#enquiry")}
+            <Link
+              to="/properties"
               className="group inline-flex items-center justify-center border border-brand-charcoal px-6 py-2.5 text-xs uppercase tracking-[0.2em] text-brand-charcoal hover:bg-brand-charcoal hover:text-brand-ivory transition-all duration-500 font-medium ease-out"
             >
-              <span>Private Enquiry</span>
+              <span>Explore Collection</span>
               <ArrowRight className="w-3.5 h-3.5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Trigger */}
@@ -100,7 +124,7 @@ export default function Navigation() {
 
       {/* Elegant Mobile Menu Drawer Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-brand-ivory transition-all duration-700 ease-out-quint flex flex-col justify-between p-8 pt-28 md:hidden ${
+        className={`fixed inset-0 z-40 bg-brand-ivory transition-all duration-700 ease-out flex flex-col justify-between p-8 pt-28 md:hidden ${
           isMobileMenuOpen
             ? "opacity-100 pointer-events-auto translate-y-0"
             : "opacity-0 pointer-events-none -translate-y-4"
@@ -114,29 +138,43 @@ export default function Navigation() {
             Discover ALFF HOMES
           </span>
           {navLinks.map((link, idx) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={(e) => handleLinkClick(e, link.href)}
-              className="font-serif text-3xl text-brand-charcoal hover:text-brand-bronze transition-colors duration-300 block"
-              style={{
-                transitionDelay: `${idx * 75}ms`
-              }}
-            >
-              {link.label}
-            </a>
+            link.isExternal ? (
+              <Link
+                key={link.label}
+                to={link.to}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="font-serif text-3xl text-brand-charcoal hover:text-brand-bronze transition-colors duration-300 block"
+                style={{
+                  transitionDelay: `${idx * 75}ms`
+                }}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.to}
+                onClick={(e) => handleLinkClick(e, link)}
+                className="font-serif text-3xl text-brand-charcoal hover:text-brand-bronze transition-colors duration-300 block"
+                style={{
+                  transitionDelay: `${idx * 75}ms`
+                }}
+              >
+                {link.label}
+              </a>
+            )
           ))}
         </div>
 
         <div className="flex flex-col space-y-6">
-          <a
-            href="#enquiry"
-            onClick={(e) => handleLinkClick(e, "#enquiry")}
+          <Link
+            to="/properties"
+            onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center justify-between border-b border-brand-charcoal py-4 text-xs uppercase tracking-[0.2em] text-brand-charcoal font-medium hover:text-brand-bronze transition-colors"
           >
             <span>Begin Private Consultation</span>
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
           <div className="text-[10px] text-brand-taupe tracking-wider leading-relaxed">
             <p>© {new Date().getFullYear()} ALFF HOMES LTD.</p>
             <p className="mt-1">Lagos • Port Harcourt, Nigeria</p>

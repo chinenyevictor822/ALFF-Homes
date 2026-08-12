@@ -47,78 +47,70 @@ def run_tests():
             print("Launching headless Chromium browser...")
             browser = p.chromium.launch(headless=True)
 
-            # --- DESKTOP VERIFICATION ---
-            print("Verifying Desktop Viewport...")
+            # --- 1. DESKTOP PROPERTIES PAGE VERIFICATION ---
+            print("Verifying Desktop Viewport on /#/properties...")
             page_desktop = browser.new_page(viewport={"width": 1440, "height": 900})
-            page_desktop.goto("http://localhost:5173")
-            time.sleep(1.5)  # Wait for animations to trigger
+            page_desktop.goto("http://localhost:5173/#/properties")
+            time.sleep(2.0)  # Wait for animations and images to render
 
-            # 1. Take Hero screenshot
-            page_desktop.screenshot(path="screenshots/desktop_hero.png")
-            print("Saved screenshots/desktop_hero.png")
+            # Capture properties directory main layout
+            page_desktop.screenshot(path="screenshots/desktop_properties_page.png")
+            print("Saved screenshots/desktop_properties_page.png")
 
-            # 2. Scroll to and capture properties section
-            properties_elem = page_desktop.query_selector("#collection")
-            if properties_elem:
-                properties_elem.scroll_into_view_if_needed()
+            # Perform search keyword entry
+            print("Testing search input...")
+            search_input = page_desktop.query_selector("#search")
+            if search_input:
+                search_input.fill("Obsidian")
                 time.sleep(1.0)
-                properties_elem.screenshot(path="screenshots/property_presentation_section.png")
-                print("Saved screenshots/property_presentation_section.png")
+                # Take filter-applied interaction screenshot
+                page_desktop.screenshot(path="screenshots/property_card_interaction.png")
+                print("Saved screenshots/property_card_interaction.png")
 
-            # 3. Open Quick View Dialog and take a screenshot
-            quick_view_btn = page_desktop.query_selector("[aria-label*='Quick View']")
-            if quick_view_btn:
-                quick_view_btn.click()
+                # Clear search input
+                search_input.fill("")
+                time.sleep(0.5)
+
+            # Click view details link on the first card
+            print("Testing navigation to Property Detail Page...")
+            detail_link = page_desktop.query_selector("a[href*='#/properties/']")
+            if detail_link:
+                detail_link.click()
+                time.sleep(2.0)
+                page_desktop.screenshot(path="screenshots/desktop_property_detail.png")
+                print("Saved screenshots/desktop_property_detail.png")
+
+            # --- 2. MOBILE PROPERTIES PAGE VERIFICATION ---
+            print("Verifying Mobile Viewport on /#/properties...")
+            page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
+            page_mobile.goto("http://localhost:5173/#/properties")
+            time.sleep(2.0)
+
+            # Capture mobile properties directory layout
+            page_mobile.screenshot(path="screenshots/mobile_properties_page.png")
+            print("Saved screenshots/mobile_properties_page.png")
+
+            # Open mobile filter panel
+            mobile_filter_btn = page_mobile.query_selector("[aria-label='Open mobile filters']")
+            if mobile_filter_btn:
+                mobile_filter_btn.click()
                 time.sleep(1.0)
-                page_desktop.screenshot(path="screenshots/desktop_quick_view_dialog.png")
-                print("Saved screenshots/desktop_quick_view_dialog.png")
+                page_mobile.screenshot(path="screenshots/mobile_filter_experience.png")
+                print("Saved screenshots/mobile_filter_experience.png")
 
-                # Close the quick view dialog
-                close_btn = page_desktop.query_selector("[aria-label='Close dialog']")
+                # Close mobile filters
+                close_btn = page_mobile.query_selector("[aria-label='Close filters']")
                 if close_btn:
                     close_btn.click()
                     time.sleep(0.5)
 
-            # 4. Trigger prefill & scroll to Enquiry
-            tour_btn = page_desktop.query_selector("button:has-text('Request Private Tour')")
-            if tour_btn:
-                tour_btn.click()
-                time.sleep(1.0)
-                # Verify that selectedProperty has prefilled option
-                selected_prop_val = page_desktop.eval_on_selector("#selectedProperty", "el => el.value")
-                print(f"Prefilled Property form value: {selected_prop_val}")
-
-                # Take full-page screenshot
-                page_desktop.screenshot(path="screenshots/desktop_homepage.png", full_page=True)
-                print("Saved screenshots/desktop_homepage.png (Full Page)")
-
-            # --- MOBILE VERIFICATION ---
-            print("Verifying Mobile Viewport...")
-            page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
-            page_mobile.goto("http://localhost:5173")
-            time.sleep(1.5)
-
-            # 1. Capture Mobile Hero
-            page_mobile.screenshot(path="screenshots/mobile_hero.png")
-            print("Saved screenshots/mobile_hero.png")
-
-            # 2. Open Mobile Navigation Menu Drawer
-            mobile_menu_btn = page_mobile.query_selector("[aria-label='Open menu']")
-            if mobile_menu_btn:
-                mobile_menu_btn.click()
-                time.sleep(1.0)
-                page_mobile.screenshot(path="screenshots/navigation_menu_state.png")
-                print("Saved screenshots/navigation_menu_state.png")
-
-                # Close mobile menu
-                close_menu_btn = page_mobile.query_selector("[aria-label='Close menu']")
-                if close_menu_btn:
-                    close_menu_btn.click()
-                    time.sleep(0.5)
-
-            # Capture full-page Mobile Homepage
-            page_mobile.screenshot(path="screenshots/mobile_homepage.png", full_page=True)
-            print("Saved screenshots/mobile_homepage.png (Full Page)")
+            # Navigate to detail page on mobile
+            mobile_detail_link = page_mobile.query_selector("a[href*='#/properties/']")
+            if mobile_detail_link:
+                mobile_detail_link.click()
+                time.sleep(2.0)
+                page_mobile.screenshot(path="screenshots/mobile_property_detail.png")
+                print("Saved screenshots/mobile_property_detail.png")
 
             browser.close()
             print("All verification steps completed successfully!")
