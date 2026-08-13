@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-ivory: #FAFAF7;
+  --color-brand-stone: #EAE6E1;
+  --color-brand-charcoal: #151618;
+  --color-brand-taupe: #8A8279;
+  --color-brand-bronze: #A38C6D;
+  --color-brand-bronze-dark: #8C7456;
+
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  --animate-image-reveal: image-reveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-text-reveal: text-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @keyframes image-reveal {
+    from {
+      clip-path: inset(100% 0 0 0);
+      transform: scale(1.1);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      transform: scale(1);
+    }
+  }
+
+  @keyframes text-reveal {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* Custom premium visual styles to support the creative editorial layout */
+@layer base {
+  body {
+    background-color: var(--color-brand-ivory);
+    color: var(--color-brand-charcoal);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .font-editorial {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Scrollbar customization for high-end luxury aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-brand-ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-stone);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-taupe);
+}
+
+/* Architectural outline focus states for key accessibility compliance */
+*:focus-visible {
+  outline: 1px solid var(--color-brand-bronze);
+  outline-offset: 2px;
+}
+
+/* Fine-tune cubic bezier timing for modern African luxury editorial interactions */
+.transition-luxury {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 600ms;
+}
+
+.hover-zoom-container img {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-zoom-container:hover img {
+  transform: scale(1.05);
+}
