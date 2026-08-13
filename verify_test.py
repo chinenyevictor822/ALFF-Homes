@@ -47,64 +47,54 @@ def run_tests():
             print("Launching headless Chromium browser...")
             browser = p.chromium.launch(headless=True)
 
-            # --- 1. DESKTOP TICKET 2 VERIFICATION ---
-            print("Verifying Desktop Viewport on /#/properties...")
+            # --- DESKTOP ROUTE TESTING ---
+            print("Verifying Desktop Viewports on newly added routes...")
             page_desktop = browser.new_page(viewport={"width": 1440, "height": 900})
-            page_desktop.goto("http://localhost:5173/#/properties")
-            time.sleep(2.0)  # Wait for animations and images to render
 
-            # Capture properties directory main layout
-            page_desktop.screenshot(path="screenshots/desktop_properties_page.png")
-            print("Saved screenshots/desktop_properties_page.png")
-
-            # Click "Request Private Tour" on the first card to trigger slide-over drawer
-            print("Opening Enquiry Drawer...")
-            tour_btn = page_desktop.query_selector("button:has-text('Request Private Tour')")
-            if tour_btn:
-                tour_btn.click()
-                time.sleep(1.0)
-                page_desktop.screenshot(path="screenshots/desktop_enquiry_drawer_open.png")
-                print("Saved screenshots/desktop_enquiry_drawer_open.png")
-
-                # Test Form Validation Errors
-                print("Testing form validation errors...")
-                submit_btn = page_desktop.query_selector("button:has-text('Compile Private Brief')")
-                if submit_btn:
-                    submit_btn.click()
-                    time.sleep(0.5)
-                    page_desktop.screenshot(path="screenshots/desktop_enquiry_validation_errors.png")
-                    print("Saved screenshots/desktop_enquiry_validation_errors.png")
-
-                    # Fill valid parameters
-                    print("Filling valid form parameters...")
-                    page_desktop.fill("#fullName", "Hon. Tarilah Lawson")
-                    page_desktop.fill("#email", "tarilah@lawsongroup.ng")
-                    page_desktop.fill("#phone", "+234 812 345 6789")
-                    page_desktop.fill("#message", "Requesting an exclusive walkthrough next Tuesday at dawn.")
-                    page_desktop.check("#consent")
-
-                    # Click compile brief again
-                    submit_btn.click()
-                    time.sleep(1.0)
-                    page_desktop.screenshot(path="screenshots/desktop_enquiry_success.png")
-                    print("Saved screenshots/desktop_enquiry_success.png")
-
-            # --- 2. MOBILE TICKET 2 VERIFICATION ---
-            print("Verifying Mobile Viewport on /#/properties...")
-            page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
-            page_mobile.goto("http://localhost:5173/#/properties")
+            # 1. Verify /#/about page
+            page_desktop.goto("http://localhost:5173/#/about")
             time.sleep(2.0)
+            page_desktop.screenshot(path="screenshots/desktop_about_page.png")
+            print("Saved screenshots/desktop_about_page.png")
 
-            # Trigger Enquiry Drawer on Mobile
-            mobile_tour_btn = page_mobile.query_selector("button:has-text('Request Private Tour')")
-            if mobile_tour_btn:
-                mobile_tour_btn.click()
+            # 2. Verify /#/services page
+            page_desktop.goto("http://localhost:5173/#/services")
+            time.sleep(2.0)
+            page_desktop.screenshot(path="screenshots/desktop_services_page.png")
+            print("Saved screenshots/desktop_services_page.png")
+
+            # 3. Open Enquiry Drawer from services CTA
+            build_cta = page_desktop.query_selector("button:has-text('Inquire About Private Build')")
+            if build_cta:
+                build_cta.click()
                 time.sleep(1.0)
-                page_mobile.screenshot(path="screenshots/mobile_enquiry_drawer.png")
-                print("Saved screenshots/mobile_enquiry_drawer.png")
+                page_desktop.screenshot(path="screenshots/desktop_services_drawer.png")
+                print("Saved screenshots/desktop_services_drawer.png")
+
+                # Close drawer
+                close_btn = page_desktop.query_selector("[aria-label='Close drawer']")
+                if close_btn:
+                    close_btn.click()
+                    time.sleep(0.5)
+
+            # --- MOBILE ROUTE TESTING ---
+            print("Verifying Mobile Viewports on newly added routes...")
+            page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
+
+            # 1. Mobile /#/about
+            page_mobile.goto("http://localhost:5173/#/about")
+            time.sleep(2.0)
+            page_mobile.screenshot(path="screenshots/mobile_about_page.png")
+            print("Saved screenshots/mobile_about_page.png")
+
+            # 2. Mobile /#/services
+            page_mobile.goto("http://localhost:5173/#/services")
+            time.sleep(2.0)
+            page_mobile.screenshot(path="screenshots/mobile_services_page.png")
+            print("Saved screenshots/mobile_services_page.png")
 
             browser.close()
-            print("All verification steps completed successfully!")
+            print("All Ticket 3 verification steps completed successfully!")
 
     except Exception as e:
         print(f"Playwright automation failed: {e}")
