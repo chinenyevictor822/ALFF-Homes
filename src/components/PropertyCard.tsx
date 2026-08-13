@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import type { Property } from "../types/property";
 import { Maximize2, X, Sparkles, MapPin, BedDouble, Bath, Square, MessageSquare } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
@@ -15,24 +16,28 @@ export default function PropertyCard({ property, onEnquire }: PropertyCardProps)
     <>
       <ScrollReveal direction="up" className="group">
         <div className="flex flex-col bg-transparent border-b border-brand-stone pb-8 overflow-hidden">
-          {/* Hero Image Container with hover zoom */}
-          <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-stone hover-zoom-container cursor-pointer" onClick={() => setIsQuickViewOpen(true)}>
-            <img
-              src={property.imageUrl}
-              alt={property.title}
-              className="w-full h-full object-cover object-center"
-              loading="lazy"
-            />
-            {/* Elegant overlay on hover */}
-            <div className="absolute inset-0 bg-brand-charcoal/10 group-hover:bg-brand-charcoal/20 transition-all duration-700" />
+
+          {/* Hero Image Container with hover zoom linking to full property detail */}
+          <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-stone hover-zoom-container">
+            <Link to={`/properties/${property.id}`} className="block w-full h-full cursor-pointer">
+              <img
+                src={property.imageUrl}
+                alt={property.title}
+                className="w-full h-full object-cover object-center"
+                loading="lazy"
+              />
+              {/* Elegant overlay on hover */}
+              <div className="absolute inset-0 bg-brand-charcoal/10 group-hover:bg-brand-charcoal/20 transition-all duration-700" />
+            </Link>
 
             {/* Quick View Button Overlay */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 setIsQuickViewOpen(true);
               }}
-              className="absolute bottom-4 right-4 bg-brand-ivory/95 backdrop-blur-xs text-brand-charcoal hover:bg-brand-charcoal hover:text-brand-ivory p-3 transition-colors duration-500 rounded-full shadow-md focus:outline-hidden"
+              className="absolute bottom-4 right-4 bg-brand-ivory/95 backdrop-blur-xs text-brand-charcoal hover:bg-brand-charcoal hover:text-brand-ivory p-3 transition-colors duration-500 rounded-full shadow-md focus:outline-hidden z-10"
               aria-label={`Quick View ${property.title}`}
             >
               <Maximize2 className="w-4 h-4 stroke-[1.5]" />
@@ -42,9 +47,11 @@ export default function PropertyCard({ property, onEnquire }: PropertyCardProps)
           {/* Property Narrative Meta */}
           <div className="mt-6 flex flex-col space-y-3">
             <div className="flex items-baseline justify-between">
-              <h3 className="font-serif text-2xl text-brand-charcoal group-hover:text-brand-bronze transition-colors duration-500">
-                {property.title}
-              </h3>
+              <Link to={`/properties/${property.id}`}>
+                <h3 className="font-serif text-2xl text-brand-charcoal hover:text-brand-bronze transition-colors duration-500 font-medium">
+                  {property.title}
+                </h3>
+              </Link>
               <span className="font-sans text-xs tracking-widest text-brand-taupe uppercase">
                 {property.size}
               </span>
