@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { properties } from "../data/properties";
 import ScrollReveal from "../components/ScrollReveal";
 import EnquirySection from "../components/EnquirySection";
+import EnquiryDrawer from "../components/EnquiryDrawer";
 import { MapPin, ArrowLeft, Ruler, BedDouble, Bath, HelpCircle, ArrowRight } from "lucide-react";
 
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Find the active property
   const property = properties.find((p) => p.id === id);
@@ -66,7 +69,7 @@ export default function PropertyDetail() {
             <span className="text-[10px] uppercase tracking-[0.35em] text-brand-bronze font-bold">
               {property.type} PRIVATE COLLECTION
             </span>
-            <h1 className="font-serif text-4xl md:text-6xl text-brand-ivory leading-tight max-w-4xl">
+            <h1 className="font-serif text-4xl md:text-6xl text-brand-ivory leading-tight max-w-4xl font-medium">
               {property.title}
             </h1>
             <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-brand-ivory/80 flex items-center gap-1 font-semibold">
@@ -154,12 +157,12 @@ export default function PropertyDetail() {
                 <p className="text-[10px] text-brand-taupe italic">
                   * Note: Price represents direct development value guidelines. Client verification required.
                 </p>
-                <a
-                  href="#enquiry"
-                  className="w-full bg-brand-charcoal hover:bg-brand-bronze text-brand-ivory text-center py-4 text-xs uppercase tracking-widest font-semibold transition-colors duration-500 flex items-center justify-center gap-2"
+                <button
+                  onClick={() => setIsDrawerOpen(true)}
+                  className="w-full bg-brand-charcoal hover:bg-brand-bronze text-brand-ivory text-center py-4 text-xs uppercase tracking-widest font-semibold transition-colors duration-500 flex items-center justify-center gap-2 cursor-pointer focus:outline-hidden"
                 >
                   <span>Initiate Private Acquisition</span>
-                </a>
+                </button>
               </div>
             </ScrollReveal>
           </div>
@@ -167,8 +170,15 @@ export default function PropertyDetail() {
         </div>
       </section>
 
-      {/* Embedded Prefilled Contact Enquiry Form */}
+      {/* Embedded Prefilled Contact Enquiry Form as fallback */}
       <EnquirySection prefilledProperty={property.title} />
+
+      {/* Slide-over Private Consultation Drawer */}
+      <EnquiryDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        property={property}
+      />
 
       {/* Related Properties / Collection Recommendations */}
       <section className="py-24 border-t border-brand-stone bg-brand-stone/10">
@@ -190,7 +200,7 @@ export default function PropertyDetail() {
                   <div className="absolute inset-0 bg-brand-charcoal/10" />
                 </div>
                 <div className="mt-6 space-y-2">
-                  <h3 className="font-serif text-2xl text-brand-charcoal">{p.title}</h3>
+                  <h3 className="font-serif text-2xl text-brand-charcoal font-medium">{p.title}</h3>
                   <p className="text-xs uppercase tracking-widest text-brand-bronze">{p.location}</p>
                   <p className="text-xs text-brand-taupe line-clamp-2">{p.description}</p>
                   <div className="pt-2">

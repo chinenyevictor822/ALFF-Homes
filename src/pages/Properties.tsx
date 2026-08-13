@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { properties } from "../data/properties";
+import type { Property } from "../types/property";
 import PropertyCard from "../components/PropertyCard";
 import ScrollReveal from "../components/ScrollReveal";
+import EnquiryDrawer from "../components/EnquiryDrawer";
 import { Search, SlidersHorizontal, ArrowUpDown, X, Compass } from "lucide-react";
 
 export default function Properties() {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
   const [selectedLocation, setSelectedLocation] = useState<string>("All");
@@ -14,6 +15,10 @@ export default function Properties() {
   const [priceRange, setPriceRange] = useState<number>(2500000000); // Slider max
   const [sortBy, setSortBy] = useState<string>("default");
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // Drawer States
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedEnquiryProperty, setSelectedEnquiryProperty] = useState<Property | undefined>(undefined);
 
   // Available options
   const types = ["All", "Pavilion", "Villa", "Atrium"];
@@ -65,8 +70,9 @@ export default function Properties() {
   }, [searchQuery, selectedType, selectedLocation, selectedBeds, priceRange, sortBy]);
 
   const handleCardEnquire = (propertyName: string) => {
-    // Navigate to Contact/Enquiry block with parameters
-    navigate(`/?enquiry=${encodeURIComponent(propertyName)}#enquiry`);
+    const prop = properties.find((p) => p.title === propertyName);
+    setSelectedEnquiryProperty(prop);
+    setIsDrawerOpen(true);
   };
 
   const handleResetFilters = () => {
@@ -346,7 +352,7 @@ export default function Properties() {
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full bg-brand-stone/10 border-b border-brand-stone focus:border-brand-bronze py-2.5 text-xs text-brand-charcoal focus:outline-hidden cursor-pointer"
+                      className="w-full bg-brand-stone/10 border-b border-brand-stone/60 focus:border-brand-bronze py-2.5 text-xs text-brand-charcoal focus:outline-hidden cursor-pointer"
                     >
                       <option value="default">Default</option>
                       <option value="price-asc">Price: Low to High</option>
@@ -388,7 +394,7 @@ export default function Properties() {
                 <div className="pt-2">
                   <Link
                     to={`/properties/${property.id}`}
-                    className="inline-flex items-center text-xs uppercase tracking-widest text-brand-bronze hover:text-brand-charcoal font-semibold transition-colors"
+                    className="inline-flex items-center text-xs uppercase tracking-widest text-brand-bronze hover:text-brand-charcoal font-semibold transition-colors focus:outline-hidden"
                   >
                     <span>View Architectural Details</span>
                     <span className="block w-4 h-[1px] bg-brand-bronze ml-2" />
@@ -412,18 +418,24 @@ export default function Properties() {
               >
                 Clear Search filters
               </button>
-              <a
-                href="#enquiry"
-                onClick={() => navigate("/#enquiry")}
+              <Link
+                to="/"
                 className="bg-brand-charcoal text-brand-ivory hover:bg-brand-bronze px-6 py-3 text-xs uppercase tracking-widest font-bold transition-all duration-300"
               >
                 Consult Private Desk
-              </a>
+              </Link>
             </div>
           </ScrollReveal>
         )}
 
       </section>
+
+      {/* Slide-over Private Consultation Drawer */}
+      <EnquiryDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        property={selectedEnquiryProperty}
+      />
     </div>
   );
 }

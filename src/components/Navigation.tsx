@@ -19,8 +19,8 @@ export default function Navigation() {
 
   const navLinks = [
     { label: "Collection", to: "/properties", isExternal: true },
-    { label: "Our Narrative", to: "#narrative", isExternal: false },
-    { label: "Services", to: "#services", isExternal: false },
+    { label: "Services", to: "/services", isExternal: true },
+    { label: "About", to: "/about", isExternal: true },
     { label: "Credentials", to: "#credentials", isExternal: false }
   ];
 
@@ -76,7 +76,9 @@ export default function Navigation() {
                   key={link.label}
                   to={link.to}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-xs uppercase tracking-[0.2em] text-brand-charcoal/80 hover:text-brand-bronze font-medium transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-brand-bronze after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left"
+                  className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-brand-bronze after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left ${
+                    location.pathname === link.to ? "text-brand-bronze" : "text-brand-charcoal/80 hover:text-brand-bronze"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -143,7 +145,9 @@ export default function Navigation() {
                 key={link.label}
                 to={link.to}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="font-serif text-3xl text-brand-charcoal hover:text-brand-bronze transition-colors duration-300 block"
+                className={`font-serif text-3xl transition-colors duration-300 block ${
+                  location.pathname === link.to ? "text-brand-bronze" : "text-brand-charcoal hover:text-brand-bronze"
+                }`}
                 style={{
                   transitionDelay: `${idx * 75}ms`
                 }}

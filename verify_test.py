@@ -47,73 +47,54 @@ def run_tests():
             print("Launching headless Chromium browser...")
             browser = p.chromium.launch(headless=True)
 
-            # --- 1. DESKTOP PROPERTIES PAGE VERIFICATION ---
-            print("Verifying Desktop Viewport on /#/properties...")
+            # --- DESKTOP ROUTE TESTING ---
+            print("Verifying Desktop Viewports on newly added routes...")
             page_desktop = browser.new_page(viewport={"width": 1440, "height": 900})
-            page_desktop.goto("http://localhost:5173/#/properties")
-            time.sleep(2.0)  # Wait for animations and images to render
 
-            # Capture properties directory main layout
-            page_desktop.screenshot(path="screenshots/desktop_properties_page.png")
-            print("Saved screenshots/desktop_properties_page.png")
-
-            # Perform search keyword entry
-            print("Testing search input...")
-            search_input = page_desktop.query_selector("#search")
-            if search_input:
-                search_input.fill("Obsidian")
-                time.sleep(1.0)
-                # Take filter-applied interaction screenshot
-                page_desktop.screenshot(path="screenshots/property_card_interaction.png")
-                print("Saved screenshots/property_card_interaction.png")
-
-                # Clear search input
-                search_input.fill("")
-                time.sleep(0.5)
-
-            # Click view details link on the first card
-            print("Testing navigation to Property Detail Page...")
-            detail_link = page_desktop.query_selector("a[href*='#/properties/']")
-            if detail_link:
-                detail_link.click()
-                time.sleep(2.0)
-                page_desktop.screenshot(path="screenshots/desktop_property_detail.png")
-                print("Saved screenshots/desktop_property_detail.png")
-
-            # --- 2. MOBILE PROPERTIES PAGE VERIFICATION ---
-            print("Verifying Mobile Viewport on /#/properties...")
-            page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
-            page_mobile.goto("http://localhost:5173/#/properties")
+            # 1. Verify /#/about page
+            page_desktop.goto("http://localhost:5173/#/about")
             time.sleep(2.0)
+            page_desktop.screenshot(path="screenshots/desktop_about_page.png")
+            print("Saved screenshots/desktop_about_page.png")
 
-            # Capture mobile properties directory layout
-            page_mobile.screenshot(path="screenshots/mobile_properties_page.png")
-            print("Saved screenshots/mobile_properties_page.png")
+            # 2. Verify /#/services page
+            page_desktop.goto("http://localhost:5173/#/services")
+            time.sleep(2.0)
+            page_desktop.screenshot(path="screenshots/desktop_services_page.png")
+            print("Saved screenshots/desktop_services_page.png")
 
-            # Open mobile filter panel
-            mobile_filter_btn = page_mobile.query_selector("[aria-label='Open mobile filters']")
-            if mobile_filter_btn:
-                mobile_filter_btn.click()
+            # 3. Open Enquiry Drawer from services CTA
+            build_cta = page_desktop.query_selector("button:has-text('Inquire About Private Build')")
+            if build_cta:
+                build_cta.click()
                 time.sleep(1.0)
-                page_mobile.screenshot(path="screenshots/mobile_filter_experience.png")
-                print("Saved screenshots/mobile_filter_experience.png")
+                page_desktop.screenshot(path="screenshots/desktop_services_drawer.png")
+                print("Saved screenshots/desktop_services_drawer.png")
 
-                # Close mobile filters
-                close_btn = page_mobile.query_selector("[aria-label='Close filters']")
+                # Close drawer
+                close_btn = page_desktop.query_selector("[aria-label='Close drawer']")
                 if close_btn:
                     close_btn.click()
                     time.sleep(0.5)
 
-            # Navigate to detail page on mobile
-            mobile_detail_link = page_mobile.query_selector("a[href*='#/properties/']")
-            if mobile_detail_link:
-                mobile_detail_link.click()
-                time.sleep(2.0)
-                page_mobile.screenshot(path="screenshots/mobile_property_detail.png")
-                print("Saved screenshots/mobile_property_detail.png")
+            # --- MOBILE ROUTE TESTING ---
+            print("Verifying Mobile Viewports on newly added routes...")
+            page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
+
+            # 1. Mobile /#/about
+            page_mobile.goto("http://localhost:5173/#/about")
+            time.sleep(2.0)
+            page_mobile.screenshot(path="screenshots/mobile_about_page.png")
+            print("Saved screenshots/mobile_about_page.png")
+
+            # 2. Mobile /#/services
+            page_mobile.goto("http://localhost:5173/#/services")
+            time.sleep(2.0)
+            page_mobile.screenshot(path="screenshots/mobile_services_page.png")
+            print("Saved screenshots/mobile_services_page.png")
 
             browser.close()
-            print("All verification steps completed successfully!")
+            print("All Ticket 3 verification steps completed successfully!")
 
     except Exception as e:
         print(f"Playwright automation failed: {e}")

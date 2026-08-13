@@ -4,6 +4,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import { Home } from "./pages/Home";
 import { Properties } from "./pages/Properties";
 import { PropertyDetail } from "./pages/PropertyDetail";
+import { About } from "./pages/About";
+import { Services } from "./pages/Services";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/properties" element={<Properties />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
           </Routes>
         </main>
 
