@@ -47,7 +47,7 @@ def run_tests():
             print("Launching headless Chromium browser...")
             browser = p.chromium.launch(headless=True)
 
-            # --- 1. DESKTOP PROPERTIES PAGE VERIFICATION ---
+            # --- 1. DESKTOP TICKET 2 VERIFICATION ---
             print("Verifying Desktop Viewport on /#/properties...")
             page_desktop = browser.new_page(viewport={"width": 1440, "height": 900})
             page_desktop.goto("http://localhost:5173/#/properties")
@@ -57,60 +57,51 @@ def run_tests():
             page_desktop.screenshot(path="screenshots/desktop_properties_page.png")
             print("Saved screenshots/desktop_properties_page.png")
 
-            # Perform search keyword entry
-            print("Testing search input...")
-            search_input = page_desktop.query_selector("#search")
-            if search_input:
-                search_input.fill("Obsidian")
+            # Click "Request Private Tour" on the first card to trigger slide-over drawer
+            print("Opening Enquiry Drawer...")
+            tour_btn = page_desktop.query_selector("button:has-text('Request Private Tour')")
+            if tour_btn:
+                tour_btn.click()
                 time.sleep(1.0)
-                # Take filter-applied interaction screenshot
-                page_desktop.screenshot(path="screenshots/property_card_interaction.png")
-                print("Saved screenshots/property_card_interaction.png")
+                page_desktop.screenshot(path="screenshots/desktop_enquiry_drawer_open.png")
+                print("Saved screenshots/desktop_enquiry_drawer_open.png")
 
-                # Clear search input
-                search_input.fill("")
-                time.sleep(0.5)
+                # Test Form Validation Errors
+                print("Testing form validation errors...")
+                submit_btn = page_desktop.query_selector("button:has-text('Compile Private Brief')")
+                if submit_btn:
+                    submit_btn.click()
+                    time.sleep(0.5)
+                    page_desktop.screenshot(path="screenshots/desktop_enquiry_validation_errors.png")
+                    print("Saved screenshots/desktop_enquiry_validation_errors.png")
 
-            # Click view details link on the first card
-            print("Testing navigation to Property Detail Page...")
-            detail_link = page_desktop.query_selector("a[href*='#/properties/']")
-            if detail_link:
-                detail_link.click()
-                time.sleep(2.0)
-                page_desktop.screenshot(path="screenshots/desktop_property_detail.png")
-                print("Saved screenshots/desktop_property_detail.png")
+                    # Fill valid parameters
+                    print("Filling valid form parameters...")
+                    page_desktop.fill("#fullName", "Hon. Tarilah Lawson")
+                    page_desktop.fill("#email", "tarilah@lawsongroup.ng")
+                    page_desktop.fill("#phone", "+234 812 345 6789")
+                    page_desktop.fill("#message", "Requesting an exclusive walkthrough next Tuesday at dawn.")
+                    page_desktop.check("#consent")
 
-            # --- 2. MOBILE PROPERTIES PAGE VERIFICATION ---
+                    # Click compile brief again
+                    submit_btn.click()
+                    time.sleep(1.0)
+                    page_desktop.screenshot(path="screenshots/desktop_enquiry_success.png")
+                    print("Saved screenshots/desktop_enquiry_success.png")
+
+            # --- 2. MOBILE TICKET 2 VERIFICATION ---
             print("Verifying Mobile Viewport on /#/properties...")
             page_mobile = browser.new_page(viewport={"width": 375, "height": 812})
             page_mobile.goto("http://localhost:5173/#/properties")
             time.sleep(2.0)
 
-            # Capture mobile properties directory layout
-            page_mobile.screenshot(path="screenshots/mobile_properties_page.png")
-            print("Saved screenshots/mobile_properties_page.png")
-
-            # Open mobile filter panel
-            mobile_filter_btn = page_mobile.query_selector("[aria-label='Open mobile filters']")
-            if mobile_filter_btn:
-                mobile_filter_btn.click()
+            # Trigger Enquiry Drawer on Mobile
+            mobile_tour_btn = page_mobile.query_selector("button:has-text('Request Private Tour')")
+            if mobile_tour_btn:
+                mobile_tour_btn.click()
                 time.sleep(1.0)
-                page_mobile.screenshot(path="screenshots/mobile_filter_experience.png")
-                print("Saved screenshots/mobile_filter_experience.png")
-
-                # Close mobile filters
-                close_btn = page_mobile.query_selector("[aria-label='Close filters']")
-                if close_btn:
-                    close_btn.click()
-                    time.sleep(0.5)
-
-            # Navigate to detail page on mobile
-            mobile_detail_link = page_mobile.query_selector("a[href*='#/properties/']")
-            if mobile_detail_link:
-                mobile_detail_link.click()
-                time.sleep(2.0)
-                page_mobile.screenshot(path="screenshots/mobile_property_detail.png")
-                print("Saved screenshots/mobile_property_detail.png")
+                page_mobile.screenshot(path="screenshots/mobile_enquiry_drawer.png")
+                print("Saved screenshots/mobile_enquiry_drawer.png")
 
             browser.close()
             print("All verification steps completed successfully!")
