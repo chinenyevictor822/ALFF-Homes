@@ -2,7 +2,7 @@ name: ALFF Homes Verification
 
 on:
   push:
-    branches: [main]
+    branches: [main, ticket-5-verification-fix]
   pull_request:
     branches: [main]
 
