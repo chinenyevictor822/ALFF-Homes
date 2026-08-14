@@ -1,4 +1,5 @@
-import { ArrowDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowDown, ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   const handleScrollDown = () => {
@@ -15,13 +16,13 @@ export default function HeroSection() {
         <img
           src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80"
           alt="Contemporary African Luxury Villa dusk"
-          className="w-full h-full object-cover object-center scale-100 animate-[image-reveal_1.8s_ease-out-quint]"
+          className="w-full h-full object-cover object-center scale-100"
           style={{
             animation: "image-reveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards"
           }}
         />
         {/* Architectural subtle warm gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-brand-charcoal/30 to-brand-charcoal/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-brand-charcoal/20 to-brand-charcoal/40" />
       </div>
 
       {/* Editorial Content Overlays */}
@@ -38,7 +39,31 @@ export default function HeroSection() {
           Spaces worth arriving home to.
         </p>
 
-        {/* Action button / Scroll down indicator */}
+        {/* Primary and Secondary Editorial CTAs */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-in">
+          <Link
+            to="/properties"
+            className="group bg-brand-bronze hover:bg-brand-bronze-dark text-white px-8 py-4 text-xs uppercase tracking-widest font-semibold transition-all duration-500 flex items-center justify-center gap-2 focus:outline-hidden"
+          >
+            <span>Explore Collection</span>
+            <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <a
+            href="#enquiry"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById("enquiry");
+              if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            className="border border-brand-ivory/30 hover:border-brand-ivory text-brand-ivory px-8 py-4 text-xs uppercase tracking-widest font-semibold transition-all duration-500 flex items-center justify-center"
+          >
+            <span>Private Consultation</span>
+          </a>
+        </div>
+
+        {/* Scroll down indicator */}
         <button
           onClick={handleScrollDown}
           className="group flex flex-col items-center gap-3 text-brand-ivory/80 hover:text-brand-bronze transition-colors duration-300 focus:outline-hidden"
@@ -63,3 +88,4 @@ export default function HeroSection() {
     </section>
   );
 }
+export { HeroSection };

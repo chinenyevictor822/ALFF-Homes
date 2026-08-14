@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import type { Property } from "../types/property";
 import { Maximize2, X, Sparkles, MapPin, BedDouble, Bath, Square, MessageSquare } from "lucide-react";
@@ -11,6 +11,17 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ property, onEnquire }: PropertyCardProps) {
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+
+  // Close Quick View on Escape Key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isQuickViewOpen) {
+        setIsQuickViewOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isQuickViewOpen]);
 
   return (
     <>
