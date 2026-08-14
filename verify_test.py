@@ -58,7 +58,7 @@ def run_browser_verification() -> None:
 
             # Earlier-ticket routes must remain reachable.
             for route, marker in [
-                ("#/properties", "Featured Collection"),
+                ("#/properties", "The Living Collection"),
                 ("#/about", "Our Philosophy"),
                 ("#/services", "Services"),
                 ("#/properties/obsidian-pavilion", "The Obsidian Pavilion"),
@@ -102,7 +102,7 @@ def main() -> None:
         run_command(["npm", "run", "build"], "Production build")
         run_command(["npm", "run", "lint"], "Lint")
         run_browser_verification()
-        print("All ALFF Homes Ticket 4 verification steps passed successfully.")
+        print("All ALFF Homes verification steps passed successfully.")
     except Exception as exc:
         print(f"Verification failed: {exc}")
         sys.exit(1)
