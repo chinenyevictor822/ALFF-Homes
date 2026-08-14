@@ -48,15 +48,13 @@ export default function Services() {
 
   return (
     <div className="pt-28 pb-24 bg-brand-ivory text-brand-charcoal min-h-screen">
-
-      {/* Editorial Page Introduction */}
       <header className="max-w-7xl mx-auto px-6 md:px-12 mb-16 md:mb-24">
         <ScrollReveal direction="up" className="max-w-3xl">
           <span className="text-[10px] uppercase tracking-[0.4em] text-brand-bronze font-bold block mb-3">
             02 — OUR SERVICES
           </span>
           <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-brand-charcoal leading-[1.1] mb-8 font-medium">
-            Securing physical wealth through architectural craft.
+            Services
           </h1>
           <p className="font-sans text-sm md:text-base text-brand-taupe leading-relaxed max-w-2xl">
             ALFF HOMES LTD operates as a multi-disciplinary architecture and private real estate advisory firm. We offer customized structural solutions engineered to preserve multigenerational wealth and support tropical thermal comfort.
@@ -64,14 +62,12 @@ export default function Services() {
         </ScrollReveal>
       </header>
 
-      {/* Services Portfolio (Staggered presentation blocks) */}
       <section className="max-w-7xl mx-auto px-6 md:px-12 space-y-24 md:space-y-36">
         {servicesList.map((service, idx) => (
           <div
             key={service.id}
             className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start border-b border-brand-stone/40 pb-16 md:pb-24 last:border-0 last:pb-0"
           >
-            {/* Service Header Info */}
             <div className="lg:col-span-5 space-y-4">
               <ScrollReveal direction="up" className="flex items-center gap-4">
                 <div className="p-3 bg-brand-stone/30 rounded-full">{service.icon}</div>
@@ -87,7 +83,6 @@ export default function Services() {
               </p>
             </div>
 
-            {/* Service Structural Narrative */}
             <div className="lg:col-span-7 space-y-6">
               <ScrollReveal direction="up" delay={150}>
                 <p className="font-sans text-xs md:text-sm text-brand-charcoal/80 leading-relaxed font-normal">
@@ -95,7 +90,6 @@ export default function Services() {
                 </p>
               </ScrollReveal>
 
-              {/* Staggered parameters */}
               <ScrollReveal direction="up" delay={200} className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                 <div className="space-y-2 p-5 bg-brand-stone/10 border-l border-brand-bronze">
                   <h4 className="text-[9px] uppercase tracking-widest text-brand-taupe font-bold">CLIENT BASE</h4>
@@ -107,7 +101,6 @@ export default function Services() {
                 </div>
               </ScrollReveal>
 
-              {/* CTA trigger linking directly to Enquiry Drawer */}
               <ScrollReveal direction="up" delay={250} className="pt-6">
                 <button
                   onClick={handleOpenDrawer}
@@ -122,13 +115,11 @@ export default function Services() {
         ))}
       </section>
 
-      {/* Slide-over Private Consultation Drawer */}
       <EnquiryDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        property={undefined} // General Service enquiry context
+        property={undefined}
       />
-
     </div>
   );
 }
