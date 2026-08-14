@@ -13,7 +13,7 @@ export default function About() {
             01 — THE STORY
           </span>
           <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-brand-charcoal leading-[1.1] mb-8 font-medium">
-            Calibrated for West African light.
+            Our Philosophy
           </h1>
           <p className="font-sans text-sm md:text-base text-brand-taupe leading-relaxed max-w-2xl">
             Established in 2021, ALFF HOMES LTD was founded to challenge the status quo of West African luxury real estate. Rejecting generic, copy-paste templates and flashy clichéd aesthetics, our studio focuses on creating deeply intentional architectural sanctuaries.
