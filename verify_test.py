@@ -52,11 +52,13 @@ def run_browser_verification() -> None:
             # Ticket 4 homepage verification.
             desktop.goto("http://127.0.0.1:5173/#/", wait_until="networkidle")
             desktop.screenshot(path="screenshots/desktop_homepage.png", full_page=True)
-            assert desktop.locator("h1").count() > 0, "Homepage hero heading is missing."
-            assert desktop.get_by_text("Explore Collection").count() > 0, "Hero CTA is missing."
-            assert desktop.get_by_text("Private Consultation").count() > 0, "Consultation CTA is missing."
+            assert desktop.get_by_role("heading", level=1).count() > 0, "Homepage hero heading is missing."
+            assert desktop.get_by_role("link", name="Explore Collection").count() > 0, "Hero CTA is missing."
+            assert desktop.get_by_role("link", name="Private Consultation").count() > 0, "Consultation CTA is missing."
 
-            # Earlier-ticket routes must remain reachable.
+            # Earlier-ticket routes must remain reachable. Use the page's primary heading
+            # rather than a generic body-text substring so tests remain tied to the
+            # user-visible page structure and do not depend on unrelated copy.
             for route, marker in [
                 ("#/properties", "The Living Collection"),
                 ("#/about", "Our Philosophy"),
@@ -64,8 +66,12 @@ def run_browser_verification() -> None:
                 ("#/properties/obsidian-pavilion", "The Obsidian Pavilion"),
             ]:
                 desktop.goto(f"http://127.0.0.1:5173/{route}", wait_until="networkidle")
-                assert desktop.locator("body").inner_text().find(marker) >= 0, (
-                    f"Expected marker '{marker}' was not found on {route}."
+                heading = desktop.get_by_role("heading", name=marker).first
+                assert heading.count() == 1, (
+                    f"Expected primary heading '{marker}' was not found on {route}."
+                )
+                assert heading.is_visible(), (
+                    f"Expected primary heading '{marker}' is not visible on {route}."
                 )
 
             # Quick View must open and close with Escape.
@@ -81,7 +87,7 @@ def run_browser_verification() -> None:
             # Mobile-first verification.
             mobile.goto("http://127.0.0.1:5173/#/", wait_until="networkidle")
             mobile.screenshot(path="screenshots/mobile_homepage.png", full_page=True)
-            assert mobile.locator("h1").count() > 0, "Mobile hero heading is missing."
+            assert mobile.get_by_role("heading", level=1).count() > 0, "Mobile hero heading is missing."
             assert mobile.locator("body").evaluate("el => el.scrollWidth <= el.clientWidth"), (
                 "Horizontal overflow detected on the mobile homepage."
             )
